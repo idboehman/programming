@@ -4,19 +4,23 @@
 ;; Data Analysis & Definitions:
 (define-struct class (grade hrs))
 ;; A class is a structure: (make-class g h) where g and h are numbers
+;; and g is defined to three decimal places as used by NEU grades
+
 (define-struct semester (classes))
-;; A semester is a structure: (make-semester c) where c is a [Listof class] 
+;; A semester is a structure: (make-semester c) where c is a [Listof class]
+
 (define-struct year (semesters))
 ;; A year is a structure: (make-year s) where s is a [Listof semester]
 
 ;; Class examples
+;; Fall 2011 classes
 (define film (make-class 3.000 4))
 (define overview (make-class 4.000 1))
 (define discrete (make-class 2.667 4))
 (define fundies (make-class 2.333 4))
 (define fundies-lab (make-class 2.333 1))
 (define english (make-class 3.333 4))
-
+;; Spring 2012 classes
 (define overview2 (make-class 4.000 1))
 (define logic (make-class 2.667 4))
 (define logic-lab (make-class 2.667 1))
@@ -26,24 +30,20 @@
 (define micro (make-class 3.000 4))
 
 ;; Semester examples
+;; Fall 2011 semester
 (define f11 (make-semester (list film overview
                                  discrete fundies
                                  fundies-lab english)))
+;; Spring 2012 semester
 (define sp12 (make-semester (list overview2 logic
                                   logic-lab fundies2
                                   fundies2-lab psych
                                   micro)))
 
 ;; Year examples
+;; Year 1
 (define y1 (make-year (list f11 sp12)))
 
-
-
-;;(define fall-11 (list film overview discrete fundies fundies-lab english))
-;;(check-expect (loc-size fall-11) 6)
-;;(define f11 (make-semester fall-11))
-
-;;(check-expect (semester-qpa-sum f11) 51.665)
 
 ;; Contract, Purpose, Header:
 ;; class-qpa : class -> number
@@ -155,12 +155,16 @@
 
 ;; More tests
 
+;; Fall 2012 classes
 (define ood (make-class 3.667 4))
 (define natd (make-class 4 4))
 (define is2k (make-class 2.667 4)) ;; Getting a B- at lowest
 (define stats (make-class 3 4)) ;; Getting a B at lower end
 
+;; Fall 2012 semester
 (define f12 (make-semester (list ood natd is2k stats)))
+;; Year 1.5
 (define y1.5 (make-year (list f11 sp12 f12)))
 
+;; Predicted QPA for year 1.5 (IS2K and Stats grades not finalized yet)
 (overall-qpa y1.5)
