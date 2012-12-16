@@ -1,6 +1,9 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
 #reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname qpa) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+;; Program for different QPA Calculations 
+;; Based on: http://www.northeastern.edu/registrar/gradecalc.html
+
 ;; Data Analysis & Definitions:
 (define-struct class (grade hrs))
 ;; A class is a structure: (make-class g h) where g and h are numbers
@@ -44,6 +47,7 @@
 ;; Year 1
 (define y1 (make-year (list f11 sp12)))
 
+;; Function declarations
 
 ;; Contract, Purpose, Header:
 ;; class-qpa : class -> number
@@ -56,7 +60,6 @@
 (check-expect (class-qpa overview) 4)
 (check-expect (class-qpa micro) 12)
 (check-expect (class-qpa fundies2) 10.668)
-
 
 ;; Contract, Purpose, Header:
 ;; semester-size : semester -> number
@@ -71,7 +74,6 @@
 ;; Tests:
 (check-expect (semester-size f11) 6)
 (check-expect (semester-size sp12) 7)
-
 
 ;; Contract, Purpose, Header:
 ;; semester-hours : semester -> number
@@ -153,18 +155,36 @@
 ;; Tests:
 (check-expect (overall-qpa y1) (/ 110.335 37))
 
+;; Contract, Purpose, Header:
+;; qpa-needed : year number number -> number
+;; to compute the qpa needed in the upcoming semester to obtain the given qpa
+;; for the given number of credit hours (for the upcoming semester)
+;; Examples: (qpa-needed y1) should return 3.0415625
+(define (qpa-needed y hrs qpa)
+  (local [(define future-total-hours (+ (total-hours y) hrs))
+          (define future-total-qpa (* qpa future-total-hours))
+          (define total-qpa-needed (- future-total-qpa (total-year-qpa y)))]
+    (/ total-qpa-needed hrs)))
+
+;; Tests:
+(check-expect (qpa-needed y1 16 3) 3.0415625)
+
 ;; More tests
 
 ;; Fall 2012 classes
 (define ood (make-class 3.667 4))
 (define natd (make-class 4 4))
 (define is2k (make-class 2.667 4)) ;; Getting a B- at lowest
-(define stats (make-class 3 4)) ;; Getting a B at lower end
-
+(define stats (make-class 3.667 4))
 ;; Fall 2012 semester
 (define f12 (make-semester (list ood natd is2k stats)))
 ;; Year 1.5
 (define y1.5 (make-year (list f11 sp12 f12)))
-
-;; Predicted QPA for year 1.5 (IS2K and Stats grades not finalized yet)
+;; Predicted QPA for year 1.5 (IS2K grade not finalized yet)
 (overall-qpa y1.5)
+;; What QPA do I need to earn Spring 2013 to maintain my current QPA?
+(qpa-needed y1.5 16 (overall-qpa y1.5)) ;; 3.139
+;; What QPA do I need to earn Spring 2013 to get a 3.2?
+(qpa-needed y1.5 16 3.2) ;; 3.404
+
+
