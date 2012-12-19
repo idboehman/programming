@@ -103,6 +103,8 @@ class Game(object):
                 self.board[guess_row - 1][guess_col - 1] = "X"
                 print "You have " + left + " turns remaining\n"
             Board().printBoard(self.board)
+        else:
+            print "Out of guesses, you lose!"
 
 a_game = Game()
 a_game.play()
